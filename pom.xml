@@ -46,7 +46,6 @@
             <groupId>com.creator</groupId>
             <artifactId>esbatis</artifactId>
             <version>1.0.0</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>

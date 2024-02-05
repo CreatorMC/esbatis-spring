@@ -1,10 +1,12 @@
 package com.creator.esbatis.spring;
 
+import com.creator.mybatis.session.SqlSession;
 import com.creator.mybatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 
+import javax.annotation.Resource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -12,11 +14,17 @@ public class MapperFactoryBean<T> implements FactoryBean<T> {
 
     private Logger logger = LoggerFactory.getLogger(MapperFactoryBean.class);
     private Class<T> mapperInterface;
+
+    @Resource
     private SqlSessionFactory sqlSessionFactory;
 
     public MapperFactoryBean(Class<T> mapperInterface, SqlSessionFactory sqlSessionFactory) {
         this.mapperInterface = mapperInterface;
         this.sqlSessionFactory = sqlSessionFactory;
+    }
+
+    public MapperFactoryBean(Class<T> mapperInterface) {
+        this.mapperInterface = mapperInterface;
     }
 
     @SuppressWarnings("unchecked")
@@ -29,7 +37,12 @@ public class MapperFactoryBean<T> implements FactoryBean<T> {
                 return null;
             }
             try {
-                return sqlSessionFactory.openSession().selectOne(mapperInterface.getName() + "." + method.getName(), args[0]);
+                SqlSession session = sqlSessionFactory.openSession();
+                try {
+                    return session.selectOne(mapperInterface.getName() + "." + method.getName(), args[0]);
+                } finally {
+                    session.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
