@@ -1,7 +1,7 @@
 package com.creator.esbatis.spring.dao;
 
-import com.creator.esbatis.spring.entity.User;
+import com.creator.esbatis.spring.entity.Article;
 
 public interface IUserDao {
-    User queryUserInfoById(Long id);
+    Article queryUserInfoById(Long id);
 }
